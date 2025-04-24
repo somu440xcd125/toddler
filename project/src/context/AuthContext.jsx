@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        'http://localhost:8000/api/users/login',
+        'https://toddler-backend.onrender.com/api/users/login',
         { email, password },
         { withCredentials: true }
       );
@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        'http://localhost:8000/api/users/signup',
+        'https://toddler-backend.onrender.com/api/users/signup',
         { email, password, username },
         { withCredentials: true }
       );
