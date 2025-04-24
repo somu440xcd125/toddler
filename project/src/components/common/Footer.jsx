@@ -93,6 +93,7 @@ const Footer = () => {
         
         <div className="border-t border-indigo-800 mt-12 pt-8 text-center text-indigo-300">
           <p>&copy; {new Date().getFullYear()} Little Learners Nursery School. All rights reserved.</p>
+          <p>CRAFTED BY SOMNATH WITH LOVE</p>
         </div>
       </div>
     </footer>
