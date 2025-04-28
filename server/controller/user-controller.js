@@ -1,7 +1,8 @@
-import User from '../model/userSchema.js';
+import ToddlerUser from '../model/userSchema.js';
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from 'dotenv';
+import Contact from '../model/contactSchema.js';
 
 // Load environment variables from the .env file
 dotenv.config();
@@ -11,18 +12,19 @@ export const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
-    const checkUser = await User.findOne({ email });
+    const checkUser = await ToddlerUser.findOne({ email });
     if (checkUser)
       return res.json({
-        success: false,
+        seuccess: false,
         message: "User Already exists with the same email! Please try again",
       });
 
     const hashPassword = await bcrypt.hash(password, 12);
-    const newUser = new User({
+    const newUser = new ToddlerUser({
       username,
       email,
       password: hashPassword,
+       role: 'user',
     });
 
     await newUser.save();
@@ -45,7 +47,7 @@ export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const checkUser = await User.findOne({ email });
+    const checkUser = await ToddlerUser.findOne({ email });
     if (!checkUser)
       return res.json({
         success: false,
@@ -115,5 +117,20 @@ export const authMiddleware = async (req, res, next) => {
       success: false,
       message: "Unauthorized user!",
     });
+  }
+};
+
+
+export const contactUser = async (req, res) => {
+  const { name, whatsapp } = req.body;
+  if (!name || !whatsapp) {
+    return res.status(400).json({ message: "Name and WhatsApp are required" });
+  }
+
+  try {
+    const newContact = await Contact.create({ name, whatsapp });
+    res.status(201).json({ message: "Contact request received!", contact: newContact });
+  } catch (error) {
+    res.status(500).json({ message: error.message || "Server Error" });
   }
 };

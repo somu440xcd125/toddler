@@ -4,7 +4,7 @@ import { BookOpen, Clock, Users, Calendar } from 'lucide-react';
 const Programs = () => {
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
-    visible: (i: number) => ({
+    visible: (i) => ({
       opacity: 1,
       y: 0,
       transition: {

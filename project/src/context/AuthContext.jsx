@@ -15,21 +15,24 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+ 
 
-
+  // useEffect to check if user is saved in localStorage on component mount
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
-
-    try {
-      if (storedUser && storedUser !== 'undefined') {
-        setUser(JSON.parse(storedUser));
+    
+    // If a user is found in localStorage, parse it and set the user state
+    if (storedUser && storedUser !== 'undefined') {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+         // Check the user object
+        setUser(parsedUser);
+      } catch (error) {
+        console.error('Failed to parse stored user:', error);
+        localStorage.removeItem('user');
       }
-    } catch (error) {
-      console.error('Failed to parse stored user:', error);
-      localStorage.removeItem('user');
-    } finally {
-      setLoading(false);
     }
+    setLoading(false); // After checking localStorage, stop loading
   }, []);
 
   const login = async (email, password) => {
@@ -48,13 +51,13 @@ export const AuthProvider = ({ children }) => {
         throw new Error('Invalid response from server. Please try again.');
       }
   
-      setUser(user);
-      localStorage.setItem('user', JSON.stringify(user));
+      setUser(user);  // Set the user after successful login
+      localStorage.setItem('user', JSON.stringify(user)); // Save user in localStorage
     } catch (error) {
       console.error('Login error:', error);
       const errorMsg =
         error.response?.data?.message || 'Invalid email or password';
-      throw new Error(errorMsg); // This will be caught in the Login.jsx
+      throw new Error(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -70,7 +73,7 @@ export const AuthProvider = ({ children }) => {
       );
       const { user } = response.data;
       setUser(user);
-      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('user', JSON.stringify(user)); // Save user in localStorage
     } catch (error) {
       const errorMsg = error.response?.data?.message || 'Registration failed';
       throw new Error(errorMsg);
@@ -79,9 +82,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const registerContact = async (name, whatsapp) => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        'https://toddler-backend.onrender.com/api/users/registercontact',
+        { name, whatsapp },
+        { withCredentials: true }
+      );
+      return response.data;
+    } catch (error) {
+      console.error(error.response?.data?.message || error.message);
+      throw new Error(error.response?.data?.message || "Something went wrong!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
+    setUser(null); // Clear user from state
+    localStorage.removeItem('user'); // Remove user from localStorage
   };
 
   return (
@@ -92,7 +112,8 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         register,
-        isAuthenticated: !!user,
+        registerContact,
+        isAuthenticated: !!user, // If user exists, consider them authenticated
       }}
     >
       {children}

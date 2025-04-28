@@ -3,6 +3,10 @@ import Features from '../../components/home/Features';
 import Programs from '../../components/home/Programs';
 import { motion } from 'framer-motion';
 import { CalendarDays, MapPin, Phone } from 'lucide-react';
+import { useState, useEffect, useContext } from 'react';
+import { Dialog } from '@headlessui/react';
+import { useAuth } from "../../context/AuthContext";
+import toast from 'react-hot-toast';
 
 const testimonials = [
   {
@@ -23,8 +27,79 @@ const testimonials = [
 ];
 
 const Home = () => {
+  const {registerContact,user} =useAuth()
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [name, setName] = useState('');
+  const [whatsapp, setWhatsapp] = useState('');
+
+  useEffect(() => {
+    // Open modal automatically after 1 second
+    const timer = setTimeout(() => setIsOpen(true), 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsOpen(false); 
+    try {
+      await registerContact(name, whatsapp);
+      toast.success("Thank you! We'll contact you soon on WhatsApp.");
+      setName('');      
+      setWhatsapp('');
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+
+
+
+
   return (
-    <div>
+
+       <div>
+      {/* Popup Modal */}
+      <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
+        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Dialog.Panel className="mx-auto max-w-md rounded-2xl bg-white p-8 shadow-lg">
+            <Dialog.Title className="text-2xl font-bold text-center mb-4">Welcome!</Dialog.Title>
+            <p className="text-gray-600 text-center mb-6">We'll contact you soon on WhatsApp</p>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-gray-700 mb-1">Name</label>
+                <input 
+                  type="text" 
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className="w-full border border-gray-300 rounded-lg p-2"
+                  placeholder="Your Name"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 mb-1">WhatsApp Number</label>
+                <input 
+                  type="tel"
+                  value={whatsapp}
+                  onChange={(e) => setWhatsapp(e.target.value)}
+                  required
+                  className="w-full border border-gray-300 rounded-lg p-2"
+                  placeholder="Your WhatsApp Number"
+                />
+              </div>
+              <button 
+                type="submit"
+                className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
+              >
+                Submit
+              </button>
+            </form>
+          </Dialog.Panel>
+        </div>
+      </Dialog>
       <Hero />
       <Features />
       <Programs />

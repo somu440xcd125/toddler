@@ -21,7 +21,7 @@ Connection(username, password);
 app.use(bodyParser.json({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({
-    origin: 'http://localhost:5173', 
+    origin: ['http://localhost:5173', 'https://toddler.onrender.com'], // Allow both dev and production origins
     credentials: true,
 }));
 app.use('/api/users', Routes);

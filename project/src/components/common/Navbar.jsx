@@ -7,14 +7,16 @@ import { motion } from 'framer-motion';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  const { isAuthenticated, logout,user } = useAuth();
-    console.log(user)
+  const { isAuthenticated, logout, user } = useAuth();
 
+  // Define the navLinks array
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'About', path: '/about' },
     { name: 'Programs', path: '/programs' },
-    { name: 'Admission', path: '/admission' }
+    { name: 'Admission', path: '/admission' },
+    // Conditionally add the Admin link if the user is an admin
+    ...(user?.role === 'admin' ? [{ name: 'Admin', path: '/admin' }] : []),
   ];
 
   const toggleNavbar = () => {
@@ -30,7 +32,7 @@ const Navbar = () => {
               onClick={logout}
               className="text-gray-800 min-w-[100px] bg-orange-400 hover:bg-orange-500 px-4 py-2 rounded-md transition duration-300"
             >
-              {user.email.slice(0,4)}
+              {user.email.slice(0, 4)}
             </button>
           </div>
           <div className="md:hidden">

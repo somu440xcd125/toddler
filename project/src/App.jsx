@@ -15,10 +15,12 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import './index.css';
 import Register from './pages/auth/Register.jsx';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
     <AuthProvider>
+       <Toaster position="top-center" reverseOrder={false} />
       <Router>
         <Routes>
           {/* Public Routes */}
