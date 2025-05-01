@@ -12,7 +12,7 @@ export const InteractionProvider = ({ children }) => {
   const submitAdmissionForm = async (formData) => {
     console.log(formData)
     try {
-     const response= await axios.post("http://localhost:8000/api/users/admission", formData); // ✅ update this if your route differs
+     const response= await axios.post('https://toddler-backend.onrender.com/api/users/admission', formData); // ✅ update this if your route differs
     
       setAdmissionStatus(response.status);
       toast.success("Admission form submitted successfully!");
@@ -27,9 +27,9 @@ export const InteractionProvider = ({ children }) => {
       setLoading(true);
       try {
         const response = await axios.get(
-        //   'https://toddler-backend.onrender.com/api/users/getcontact',
+          'https://toddler-backend.onrender.com/api/users/admissiondetails',
   
-          'http://localhost:8000/api/users/admissiondetails',
+        //   'http://localhost:8000/api/users/admissiondetails',
           { withCredentials: true }
         );
    
