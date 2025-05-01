@@ -5,16 +5,23 @@ import {
   FileText, CheckCircle, AlertCircle, Clock, 
   ChevronDown, ChevronUp 
 } from 'lucide-react';
+import { useInteraction } from "../../context/InteractionContext";
 
 const Admission = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [openFAQ, setOpenFAQ] = useState(null);
   
-  const onSubmit = (data) => {
-    // In a real application, this would send the data to a backend
-    console.log(data);
-    setIsSubmitted(true);
+  const { submitAdmissionForm,admissionStatus } = useInteraction(); // 🔗 get method from context
+ 
+
+  const onSubmit = async (data) => {
+    
+    await submitAdmissionForm(data);
+    if(admissionStatus===201) {
+      setIsSubmitted(true)
+    }
+    
   };
 
   const toggleFAQ = (index) => {
@@ -145,308 +152,308 @@ const Admission = () => {
       </section>
       
       {/* Application Form */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            className="bg-white rounded-xl shadow-md overflow-hidden"
-            variants={fadeIn}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            <div className="bg-indigo-600 px-6 py-5">
-              <h2 className="text-2xl font-bold text-white">Application Form</h2>
-              <p className="text-indigo-200 mt-1">
-                Please fill out all required fields to begin the admission process
-              </p>
-            </div>
-            
-            {isSubmitted ? (
-              <div className="p-8">
-                <div className="text-center">
-                  <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100">
-                    <CheckCircle className="h-10 w-10 text-green-600" />
-                  </div>
-                  <h3 className="mt-3 text-xl font-semibold text-gray-900">Application Submitted!</h3>
-                  <p className="mt-2 text-gray-600">
-                    Thank you for applying to Little Learners Nursery School. We have received your application and will contact you within 5 business days.
-                  </p>
-                  <div className="mt-6">
-                    <button 
-                      type="button" 
-                      onClick={() => setIsSubmitted(false)}
-                      className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-                    >
-                      Submit Another Application
-                    </button>
-                  </div>
-                </div>
+        <section className="py-16 bg-gray-50">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div 
+              className="bg-white rounded-xl shadow-md overflow-hidden"
+              variants={fadeIn}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
+              <div className="bg-indigo-600 px-6 py-5">
+                <h2 className="text-2xl font-bold text-white">Application Form</h2>
+                <p className="text-indigo-200 mt-1">
+                  Please fill out all required fields to begin the admission process
+                </p>
               </div>
-            ) : (
-              <form onSubmit={handleSubmit(onSubmit)} className="p-8">
-                <div className="space-y-8">
-                  {/* Child Information */}
-                  <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Child Information</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label htmlFor="childFirstName" className="block text-sm font-medium text-gray-700">
-                          First Name <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          id="childFirstName"
-                          {...register("childFirstName", { required: "First name is required" })}
-                          className={`mt-1 block w-full px-3 py-2 border ${errors.childFirstName ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                        />
-                        {errors.childFirstName && (
-                          <p className="mt-1 text-sm text-red-600">{errors.childFirstName.message}</p>
-                        )}
-                      </div>
-                      <div>
-                        <label htmlFor="childLastName" className="block text-sm font-medium text-gray-700">
-                          Last Name <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          id="childLastName"
-                          {...register("childLastName", { required: "Last name is required" })}
-                          className={`mt-1 block w-full px-3 py-2 border ${errors.childLastName ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                        />
-                        {errors.childLastName && (
-                          <p className="mt-1 text-sm text-red-600">{errors.childLastName.message}</p>
-                        )}
-                      </div>
-                      <div>
-                        <label htmlFor="childDob" className="block text-sm font-medium text-gray-700">
-                          Date of Birth <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="date"
-                          id="childDob"
-                          {...register("childDob", { required: "Date of birth is required" })}
-                          className={`mt-1 block w-full px-3 py-2 border ${errors.childDob ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                        />
-                        {errors.childDob && (
-                          <p className="mt-1 text-sm text-red-600">{errors.childDob.message}</p>
-                        )}
-                      </div>
-                      <div>
-                        <label htmlFor="program" className="block text-sm font-medium text-gray-700">
-                          Program <span className="text-red-500">*</span>
-                        </label>
-                        <select
-                          id="program"
-                          {...register("program", { required: "Program selection is required" })}
-                          className={`mt-1 block w-full px-3 py-2 border ${errors.program ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                        >
-                          <option value="">Select a program</option>
-                          <option value="toddlers">Toddlers (2-3 years)</option>
-                          <option value="preschool">Preschool (3-4 years)</option>
-                          <option value="preK">Pre-K (4-5 years)</option>
-                          <option value="kindergarten">Kindergarten (5-6 years)</option>
-                        </select>
-                        {errors.program && (
-                          <p className="mt-1 text-sm text-red-600">{errors.program.message}</p>
-                        )}
-                      </div>
-                      <div>
-                        <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
-                          Preferred Start Date <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="date"
-                          id="startDate"
-                          {...register("startDate", { required: "Start date is required" })}
-                          className={`mt-1 block w-full px-3 py-2 border ${errors.startDate ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                        />
-                        {errors.startDate && (
-                          <p className="mt-1 text-sm text-red-600">{errors.startDate.message}</p>
-                        )}
-                      </div>
+              
+              {isSubmitted ? (
+                <div className="p-8">
+                  <div className="text-center">
+                    <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100">
+                      <CheckCircle className="h-10 w-10 text-green-600" />
                     </div>
-                  </div>
-                  
-                  {/* Parent/Guardian Information */}
-                  <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Parent/Guardian Information</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="md:col-span-2">
-                        <label htmlFor="parentName" className="block text-sm font-medium text-gray-700">
-                          Full Name <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          id="parentName"
-                          {...register("parentName", { required: "Parent name is required" })}
-                          className={`mt-1 block w-full px-3 py-2 border ${errors.parentName ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                        />
-                        {errors.parentName && (
-                          <p className="mt-1 text-sm text-red-600">{errors.parentName.message}</p>
-                        )}
-                      </div>
-                      <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                          Email <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="email"
-                          id="email"
-                          {...register("email", { 
-                            required: "Email is required",
-                            pattern: {
-                              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                              message: "Invalid email address"
-                            }
-                          })}
-                          className={`mt-1 block w-full px-3 py-2 border ${errors.email ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                        />
-                        {errors.email && (
-                          <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-                        )}
-                      </div>
-                      <div>
-                        <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                          Phone <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="tel"
-                          id="phone"
-                          {...register("phone", { required: "Phone number is required" })}
-                          className={`mt-1 block w-full px-3 py-2 border ${errors.phone ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                        />
-                        {errors.phone && (
-                          <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>
-                        )}
-                      </div>
-                      <div className="md:col-span-2">
-                        <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-                          Address <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          id="address"
-                          {...register("address", { required: "Address is required" })}
-                          className={`mt-1 block w-full px-3 py-2 border ${errors.address ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                        />
-                        {errors.address && (
-                          <p className="mt-1 text-sm text-red-600">{errors.address.message}</p>
-                        )}
-                      </div>
+                    <h3 className="mt-3 text-xl font-semibold text-gray-900">Application Submitted!</h3>
+                    <p className="mt-2 text-gray-600">
+                      Thank you for applying to Little Learners Nursery School. We have received your application and will contact you within 5 business days.
+                    </p>
+                    <div className="mt-6">
+                      <button 
+                        type="button" 
+                        onClick={() => setIsSubmitted(false)}
+                        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                      >
+                        Submit Another Application
+                      </button>
                     </div>
-                  </div>
-                  
-                  {/* Emergency Contact */}
-                  <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Emergency Contact</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label htmlFor="emergencyContactName" className="block text-sm font-medium text-gray-700">
-                          Name <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          id="emergencyContactName"
-                          {...register("emergencyContactName", { required: "Emergency contact name is required" })}
-                          className={`mt-1 block w-full px-3 py-2 border ${errors.emergencyContactName ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                        />
-                        {errors.emergencyContactName && (
-                          <p className="mt-1 text-sm text-red-600">{errors.emergencyContactName.message}</p>
-                        )}
-                      </div>
-                      <div>
-                        <label htmlFor="emergencyContactPhone" className="block text-sm font-medium text-gray-700">
-                          Phone <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="tel"
-                          id="emergencyContactPhone"
-                          {...register("emergencyContactPhone", { required: "Emergency contact phone is required" })}
-                          className={`mt-1 block w-full px-3 py-2 border ${errors.emergencyContactPhone ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                        />
-                        {errors.emergencyContactPhone && (
-                          <p className="mt-1 text-sm text-red-600">{errors.emergencyContactPhone.message}</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Additional Information */}
-                  <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Additional Information</h3>
-                    <div className="space-y-6">
-                      <div>
-                        <label htmlFor="specialNeeds" className="block text-sm font-medium text-gray-700">
-                          Special Needs or Considerations
-                        </label>
-                        <textarea
-                          id="specialNeeds"
-                          rows={3}
-                          {...register("specialNeeds")}
-                          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                          placeholder="Please share any special needs, allergies, or other considerations we should be aware of"
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="hearAboutUs" className="block text-sm font-medium text-gray-700">
-                          How did you hear about us? <span className="text-red-500">*</span>
-                        </label>
-                        <select
-                          id="hearAboutUs"
-                          {...register("hearAboutUs", { required: "This field is required" })}
-                          className={`mt-1 block w-full px-3 py-2 border ${errors.hearAboutUs ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                        >
-                          <option value="">Please select</option>
-                          <option value="search">Internet Search</option>
-                          <option value="social">Social Media</option>
-                          <option value="friend">Friend/Family Referral</option>
-                          <option value="event">Community Event</option>
-                          <option value="other">Other</option>
-                        </select>
-                        {errors.hearAboutUs && (
-                          <p className="mt-1 text-sm text-red-600">{errors.hearAboutUs.message}</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Terms and Conditions */}
-                  <div>
-                    <div className="flex items-start">
-                      <div className="flex items-center h-5">
-                        <input
-                          id="agreeTerms"
-                          type="checkbox"
-                          {...register("agreeTerms", { required: "You must agree to the terms and conditions" })}
-                          className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                        />
-                      </div>
-                      <div className="ml-3">
-                        <label htmlFor="agreeTerms" className="text-sm text-gray-700">
-                          I agree to the <a href="#" className="text-indigo-600 hover:text-indigo-500">terms and conditions</a> <span className="text-red-500">*</span>
-                        </label>
-                        {errors.agreeTerms && (
-                          <p className="mt-1 text-sm text-red-600">{errors.agreeTerms.message}</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Submit Button */}
-                  <div>
-                    <button
-                      type="submit"
-                      className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                      Submit Application
-                    </button>
                   </div>
                 </div>
-              </form>
-            )}
-          </motion.div>
-        </div>
-      </section>
+              ) : (
+                <form onSubmit={handleSubmit(onSubmit)} className="p-8">
+                  <div className="space-y-8">
+                    {/* Child Information */}
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-900 mb-4">Child Information</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <label htmlFor="childFirstName" className="block text-sm font-medium text-gray-700">
+                            First Name <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="childFirstName"
+                            {...register("childFirstName", { required: "First name is required" })}
+                            className={`mt-1 block w-full px-3 py-2 border ${errors.childFirstName ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
+                          />
+                          {errors.childFirstName && (
+                            <p className="mt-1 text-sm text-red-600">{errors.childFirstName.message}</p>
+                          )}
+                        </div>
+                        <div>
+                          <label htmlFor="childLastName" className="block text-sm font-medium text-gray-700">
+                            Last Name <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="childLastName"
+                            {...register("childLastName", { required: "Last name is required" })}
+                            className={`mt-1 block w-full px-3 py-2 border ${errors.childLastName ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
+                          />
+                          {errors.childLastName && (
+                            <p className="mt-1 text-sm text-red-600">{errors.childLastName.message}</p>
+                          )}
+                        </div>
+                        <div>
+                          <label htmlFor="childDob" className="block text-sm font-medium text-gray-700">
+                            Date of Birth <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="date"
+                            id="childDob"
+                            {...register("childDob", { required: "Date of birth is required" })}
+                            className={`mt-1 block w-full px-3 py-2 border ${errors.childDob ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
+                          />
+                          {errors.childDob && (
+                            <p className="mt-1 text-sm text-red-600">{errors.childDob.message}</p>
+                          )}
+                        </div>
+                        <div>
+                          <label htmlFor="program" className="block text-sm font-medium text-gray-700">
+                            Program <span className="text-red-500">*</span>
+                          </label>
+                          <select
+                            id="program"
+                            {...register("program", { required: "Program selection is required" })}
+                            className={`mt-1 block w-full px-3 py-2 border ${errors.program ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
+                          >
+                            <option value="">Select a program</option>
+                            <option value="toddlers">Toddlers (2-3 years)</option>
+                            <option value="preschool">Preschool (3-4 years)</option>
+                            <option value="preK">Pre-K (4-5 years)</option>
+                            <option value="kindergarten">Kindergarten (5-6 years)</option>
+                          </select>
+                          {errors.program && (
+                            <p className="mt-1 text-sm text-red-600">{errors.program.message}</p>
+                          )}
+                        </div>
+                        <div>
+                          <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
+                            Preferred Start Date <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="date"
+                            id="startDate"
+                            {...register("startDate", { required: "Start date is required" })}
+                            className={`mt-1 block w-full px-3 py-2 border ${errors.startDate ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
+                          />
+                          {errors.startDate && (
+                            <p className="mt-1 text-sm text-red-600">{errors.startDate.message}</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Parent/Guardian Information */}
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-900 mb-4">Parent/Guardian Information</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="md:col-span-2">
+                          <label htmlFor="parentName" className="block text-sm font-medium text-gray-700">
+                            Full Name <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="parentName"
+                            {...register("parentName", { required: "Parent name is required" })}
+                            className={`mt-1 block w-full px-3 py-2 border ${errors.parentName ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
+                          />
+                          {errors.parentName && (
+                            <p className="mt-1 text-sm text-red-600">{errors.parentName.message}</p>
+                          )}
+                        </div>
+                        <div>
+                          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                            Email <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="email"
+                            id="email"
+                            {...register("email", { 
+                              required: "Email is required",
+                              pattern: {
+                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                message: "Invalid email address"
+                              }
+                            })}
+                            className={`mt-1 block w-full px-3 py-2 border ${errors.email ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
+                          />
+                          {errors.email && (
+                            <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+                          )}
+                        </div>
+                        <div>
+                          <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                            Phone <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="tel"
+                            id="phone"
+                            {...register("phone", { required: "Phone number is required" })}
+                            className={`mt-1 block w-full px-3 py-2 border ${errors.phone ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
+                          />
+                          {errors.phone && (
+                            <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>
+                          )}
+                        </div>
+                        <div className="md:col-span-2">
+                          <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+                            Address <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="address"
+                            {...register("address", { required: "Address is required" })}
+                            className={`mt-1 block w-full px-3 py-2 border ${errors.address ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
+                          />
+                          {errors.address && (
+                            <p className="mt-1 text-sm text-red-600">{errors.address.message}</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Emergency Contact */}
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-900 mb-4">Emergency Contact</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <label htmlFor="emergencyContactName" className="block text-sm font-medium text-gray-700">
+                            Name <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="emergencyContactName"
+                            {...register("emergencyContactName", { required: "Emergency contact name is required" })}
+                            className={`mt-1 block w-full px-3 py-2 border ${errors.emergencyContactName ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
+                          />
+                          {errors.emergencyContactName && (
+                            <p className="mt-1 text-sm text-red-600">{errors.emergencyContactName.message}</p>
+                          )}
+                        </div>
+                        <div>
+                          <label htmlFor="emergencyContactPhone" className="block text-sm font-medium text-gray-700">
+                            Phone <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="tel"
+                            id="emergencyContactPhone"
+                            {...register("emergencyContactPhone", { required: "Emergency contact phone is required" })}
+                            className={`mt-1 block w-full px-3 py-2 border ${errors.emergencyContactPhone ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
+                          />
+                          {errors.emergencyContactPhone && (
+                            <p className="mt-1 text-sm text-red-600">{errors.emergencyContactPhone.message}</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Additional Information */}
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-900 mb-4">Additional Information</h3>
+                      <div className="space-y-6">
+                        <div>
+                          <label htmlFor="specialNeeds" className="block text-sm font-medium text-gray-700">
+                            Special Needs or Considerations
+                          </label>
+                          <textarea
+                            id="specialNeeds"
+                            rows={3}
+                            {...register("specialNeeds")}
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            placeholder="Please share any special needs, allergies, or other considerations we should be aware of"
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="hearAboutUs" className="block text-sm font-medium text-gray-700">
+                            How did you hear about us? <span className="text-red-500">*</span>
+                          </label>
+                          <select
+                            id="hearAboutUs"
+                            {...register("hearAboutUs", { required: "This field is required" })}
+                            className={`mt-1 block w-full px-3 py-2 border ${errors.hearAboutUs ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
+                          >
+                            <option value="">Please select</option>
+                            <option value="search">Internet Search</option>
+                            <option value="social">Social Media</option>
+                            <option value="friend">Friend/Family Referral</option>
+                            <option value="event">Community Event</option>
+                            <option value="other">Other</option>
+                          </select>
+                          {errors.hearAboutUs && (
+                            <p className="mt-1 text-sm text-red-600">{errors.hearAboutUs.message}</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Terms and Conditions */}
+                    <div>
+                      <div className="flex items-start">
+                        <div className="flex items-center h-5">
+                          <input
+                            id="agreeTerms"
+                            type="checkbox"
+                            {...register("agreeTerms", { required: "You must agree to the terms and conditions" })}
+                            className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                          />
+                        </div>
+                        <div className="ml-3">
+                          <label htmlFor="agreeTerms" className="text-sm text-gray-700">
+                            I agree to the <a href="#" className="text-indigo-600 hover:text-indigo-500">terms and conditions</a> <span className="text-red-500">*</span>
+                          </label>
+                          {errors.agreeTerms && (
+                            <p className="mt-1 text-sm text-red-600">{errors.agreeTerms.message}</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Submit Button */}
+                    <div>
+                      <button
+                        type="submit"
+                        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      >
+                        Submit Application
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              )}
+            </motion.div>
+          </div>
+        </section>
       
       {/* FAQ Section */}
       <section className="py-16 bg-white">

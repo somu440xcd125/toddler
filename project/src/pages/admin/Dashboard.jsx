@@ -1,7 +1,8 @@
 import { BarChart3, Users, UserCheck, GraduationCap, Bell, MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
-import { useEffect, useState } from 'react';
+import {useInteraction} from "../../context/InteractionContext"
+
 
 const statsCards = [
   { title: 'Total Students', value: '156', icon: <Users className="h-8 w-8 text-indigo-600" />, change: '+12%', changeType: 'positive' },
@@ -24,16 +25,26 @@ const recentMessages = [
 ];
 
 
-const pendingAdmissions = [
-  { name: 'Sophia Lee', age: '4 years', program: 'Pre-K', applicationDate: '2025-05-02' },
-  { name: 'Ethan Brown', age: '3 years', program: 'Preschool', applicationDate: '2025-05-01' },
-  { name: 'Olivia Garcia', age: '2 years', program: 'Toddlers', applicationDate: '2025-04-30' },
-];
 
 const AdminDashboard = () => {
+  
 
   const { contacts } = useAuth();
+  const {admissiondetails}=useInteraction()
 
+
+  const getAgeFromDob = (dob) => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+  
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+  
+    return age;
+  }
 
 
   return (
@@ -120,24 +131,24 @@ const AdminDashboard = () => {
           <div className="px-6 py-5 border-b border-gray-200 flex justify-between items-center">
             <h2 className="text-lg font-medium text-gray-900">Pending Admissions</h2>
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-              {pendingAdmissions.length} new
+              {admissiondetails.length} new
             </span>
           </div>
           <div className="px-6 py-5">
             <div className="flow-root">
               <ul className="-my-5 divide-y divide-gray-200">
-                {pendingAdmissions.map((admission, index) => (
+                {admissiondetails.map((admission, index) => (
                   <li key={index} className="py-4">
                     <div className="flex items-center space-x-4">
                       <div className="flex-shrink-0">
                         <div className="h-10 w-10 rounded-full bg-indigo-200 flex items-center justify-center text-indigo-600 font-bold">
-                          {admission.name.charAt(0)}
+                          {admission.childFirstName.charAt(0)}
                         </div>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">{admission.name}</p>
+                        <p className="text-sm font-medium text-gray-900 truncate">{admission.childFirstName +" "+ admission.childLastName}</p>
                         <p className="text-sm text-gray-500 truncate">
-                          {admission.age} • {admission.program} • Applied {new Date(admission.applicationDate).toLocaleDateString()}
+                          {getAgeFromDob(admission.childDob)+" years"} • {admission.program} • Applied {new Date(admission.updatedAt).toLocaleDateString()}
                         </p>
                       </div>
                       <div className="flex space-x-2">

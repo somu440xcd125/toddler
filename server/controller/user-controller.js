@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from 'dotenv';
 import Contact from '../model/contactSchema.js';
+import Admission from '../model/admissionSchema .js';
 
 // Load environment variables from the .env file
 dotenv.config();
@@ -143,3 +144,74 @@ export const getContact = async (req, res) => {
     res.status(500).json({ message: 'Server error while fetching contacts' });
   }
 };
+
+ // Import the Admission model
+
+export const handleAdmission = async (req, res) => {
+  try {
+    // Extract data from the request body
+    const {
+      childFirstName,
+      childLastName,
+      childDob,
+      program,
+      startDate,
+      parentName,
+      email,
+      phone,
+      address,
+      emergencyContactName,
+      emergencyContactPhone,
+      specialNeeds,
+      hearAboutUs,
+      agreeTerms,
+    } = req.body;
+
+    // Create a new Admission document
+    const newAdmission = new Admission({
+      childFirstName,
+      childLastName,
+      childDob,
+      program,
+      startDate,
+      parentName,
+      email,
+      phone,
+      address,
+      emergencyContactName,
+      emergencyContactPhone,
+      specialNeeds,
+      hearAboutUs,
+      agreeTerms,
+    });
+
+    // Save the admission to the database
+    const savedAdmission = await newAdmission.save();
+
+    // Send success response
+    return res.status(201).json({
+      message: 'Application submitted successfully!',
+      admission: savedAdmission,
+    });
+  } catch (error) {
+    console.error(error);
+    // Send error response
+    return res.status(500).json({
+      message: 'Error occurred while submitting the application',
+      error: error.message,
+    });
+  }
+};
+
+
+export const getAdmissionDetails =async (req,res)=>{
+  try {
+    
+    const admission = await Admission.find(); // Fetch all contacts from the database
+    res.status(200).json(admission); // Send the contacts as JSON response
+  } catch (error) {
+    console.error('Error fetching contacts:', error);
+    res.status(500).json({ message: 'Server error while fetching contacts' });
+  }
+
+}
