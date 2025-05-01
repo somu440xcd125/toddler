@@ -134,3 +134,12 @@ export const contactUser = async (req, res) => {
     res.status(500).json({ message: error.message || "Server Error" });
   }
 };
+export const getContact = async (req, res) => {
+  try {
+    const contacts = await Contact.find(); // Fetch all contacts from the database
+    res.status(200).json(contacts); // Send the contacts as JSON response
+  } catch (error) {
+    console.error('Error fetching contacts:', error);
+    res.status(500).json({ message: 'Server error while fetching contacts' });
+  }
+};

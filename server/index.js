@@ -24,3 +24,4 @@ app.use(cors({
 app.use('/api/users', Routes);
 
 app.listen(PORT, () => console.log(`Server is running successfully on PORT ${PORT}`));
+    

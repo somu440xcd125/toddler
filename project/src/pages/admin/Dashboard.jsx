@@ -1,5 +1,7 @@
 import { BarChart3, Users, UserCheck, GraduationCap, Bell, MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useAuth } from '../../context/AuthContext';
+import { useEffect, useState } from 'react';
 
 const statsCards = [
   { title: 'Total Students', value: '156', icon: <Users className="h-8 w-8 text-indigo-600" />, change: '+12%', changeType: 'positive' },
@@ -21,6 +23,7 @@ const recentMessages = [
   { sender: 'Sarah Williams', role: 'Parent', message: 'Can we schedule a meeting to discuss Tom\'s progress?', time: '1 day ago' },
 ];
 
+
 const pendingAdmissions = [
   { name: 'Sophia Lee', age: '4 years', program: 'Pre-K', applicationDate: '2025-05-02' },
   { name: 'Ethan Brown', age: '3 years', program: 'Preschool', applicationDate: '2025-05-01' },
@@ -28,6 +31,11 @@ const pendingAdmissions = [
 ];
 
 const AdminDashboard = () => {
+
+  const { contacts } = useAuth();
+
+
+
   return (
     <div>
       <div className="mb-8">
@@ -58,8 +66,50 @@ const AdminDashboard = () => {
           </motion.div>
         ))}
       </div>
-      
+      <motion.div 
+      className="mt-8 bg-white rounded-xl shadow-sm overflow-hidden"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: 0.6 }}
+    >
+      <div className="px-6 py-5 border-b border-gray-200 flex justify-between items-center">
+        <h2 className="text-lg font-medium text-gray-900">Contact List</h2>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {contacts.map((contact, index) => (
+              <tr key={index}>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  {contact.name}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {contact.whatsapp}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <a href="#" className="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
+                  <a href="#" className="text-red-600 hover:text-red-900">Delete</a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="px-6 py-4 border-t border-gray-200">
+        <button className="flex items-center justify-center w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+          Add New Contact
+        </button>
+      </div>
+    </motion.div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      
         {/* Pending Admissions */}
         <motion.div 
           className="bg-white rounded-xl shadow-sm overflow-hidden"
@@ -210,6 +260,7 @@ const AdminDashboard = () => {
           </button>
         </div>
       </motion.div>
+
     </div>
   );
 };

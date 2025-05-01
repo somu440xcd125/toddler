@@ -30,7 +30,7 @@ const SidebarItem = ({ icon: Icon, title, path, isActive }) => (
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { logout, user } = useAuth();
+  const { logout, user ,getContact,contact } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
